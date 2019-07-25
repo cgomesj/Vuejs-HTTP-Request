@@ -16,6 +16,9 @@
         <input type="email" class="form-control" placeholder="Enter email" v-model="user.email" />
         <small class="form-text text-muted" id="emailHelp">Your email is safe with us.</small>
       </div>
+
+      <input type="text" class="form-control my-3" v-model="node" />
+
       <div class="row">
         <div class="col-sm-12">
           <button
@@ -77,15 +80,17 @@ export default {
       isSubmitted: false,
       isFetched: false,
       alertHTTPResponse: "",
-      resource: {}
+      resource: {},
+      node: "data"
     };
   },
 
   created() {
     const customActions = {
-      saveAlt: { method: "POST", url: "alternative.json" }
+      saveAlt: { method: "POST", url: "alternative.json" },
+      getData: { method: "GET" }
     };
-    this.resource = this.$resource("data.json", {}, customActions);
+    this.resource = this.$resource("{node}.json", {}, customActions);
     console.log(customActions);
     console.log(this.resource);
   },
@@ -109,8 +114,22 @@ export default {
     },
 
     fetchData() {
-      this.$http
+      /*       this.$http
         .get("data.json")
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          const resultArray = [];
+          for (let key in data) {
+            console.log(key);
+            resultArray.push(data[key]);
+          }
+          this.users = resultArray;
+        }); */
+
+      this.resource
+        .getData({ node: this.node })
         .then(response => {
           return response.json();
         })
