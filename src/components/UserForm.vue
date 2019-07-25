@@ -76,36 +76,48 @@ export default {
       users: [],
       isSubmitted: false,
       isFetched: false,
-      alertHTTPResponse: ""
+      alertHTTPResponse: "",
+      resource: {}
     };
+  },
+
+  created() {
+    const customActions = {
+      saveAlt: { method: "POST", url: "alternative.json" }
+    };
+    this.resource = this.$resource("data.json", {}, customActions);
+    console.log(customActions);
+    console.log(this.resource);
   },
 
   methods: {
     submitForm() {
-      this.isSubmitted = true;
-      this.$http
-        .post("https://vuejs-http-b7853.firebaseio.com/data.json", this.user)
-        .then(
-          response => {
-            console.log(response);
-            this.alertHTTPResponse = "app-success-alert";
-          },
-          error => {
-            console.log(error);
-            this.alertHTTPResponse = "app-danger-alert";
-          }
-        );
+      /* this.isSubmitted = true;
+      this.$http.post("data.json", this.user).then(
+        response => {
+          console.log(response);
+          this.alertHTTPResponse = "app-success-alert";
+        },
+        error => {
+          console.log(error);
+          this.alertHTTPResponse = "app-danger-alert";
+        }
+      ); */
+
+      /* this.resource.save({}, this.user); */
+      this.resource.saveAlt(this.user);
     },
 
     fetchData() {
       this.$http
-        .get("https://vuejs-http-b7853.firebaseio.com/data.json")
+        .get("data.json")
         .then(response => {
           return response.json();
         })
         .then(data => {
           const resultArray = [];
           for (let key in data) {
+            console.log(key);
             resultArray.push(data[key]);
           }
           this.users = resultArray;
